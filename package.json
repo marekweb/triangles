@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "start": "serve",
+    "format": "prettier --write --single-quote '**/*.js'"
+  },
+  "devDependencies": {
+    "prettier": "^1.12.1",
+    "serve": "^6.5.7"
+  }
+}
