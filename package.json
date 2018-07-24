@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "parcel index.html",
-    "format": "prettier --write --single-quote '**/*.ts'",
+    "format": "prettier --write --single-quote 'src/**/*.ts'",
     "build": "tsc",
     "lint": "tslint -p tsconfig.json"
   },
