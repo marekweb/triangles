@@ -22,19 +22,27 @@ export class MyDemo extends Grid {
     // TODO rest args when using TS 3.0
     this.getPointElement(point[0], point[1]).style.fill = 'red';
 
-    function drawRing(grid: Grid, center: PointCoordinate, size: number, color: string = 'orange') {
+    function drawRing(
+      grid: Grid,
+      center: PointCoordinate,
+      size: number,
+      color: string = 'orange'
+    ) {
       let point: PointCoordinate = center;
       const side = 1 + size * 2;
       for (let i = 0; i < size; i++) {
         point = getAdjacentPoint(point[0], point[1], 'N');
       }
 
-
       const ptEl = grid.getPointElement(...point);
       ptEl.style.fill = 'red';
 
       // --
-    let tri: TriangleCoordinate = getTriangleAdjacentToPoint(point[0], point[1], 'NE');
+      let tri: TriangleCoordinate = getTriangleAdjacentToPoint(
+        point[0],
+        point[1],
+        'NE'
+      );
       grid.getTriangleElement(...tri).style.fill = color;
       for (let i = 0; i < side; i++) {
         tri = getAdjacentTriangle(tri[0], tri[1], tri[2], '+X');
@@ -68,21 +76,16 @@ export class MyDemo extends Grid {
     }
 
     function drawCube(grid: Grid, center: PointCoordinate) {
-      let tri = getTriangleAdjacentToPoint(center[0], center[1], 'NW');
-      grid.getTriangleElement(...tri).style.fill = '#a0a0a0';
-      tri = getTriangleAdjacentToPoint(center[0], center[1], 'NE');
-      grid.getTriangleElement(...tri).style.fill = '#a0a0a0';
+      const centerPoint = grid.getPointReference(...center);
 
-      tri = getTriangleAdjacentToPoint(center[0], center[1], 'E');
-      grid.getTriangleElement(...tri).style.fill = '#b0b0b0';
-      tri = getTriangleAdjacentToPoint(center[0], center[1], 'SE');
-      grid.getTriangleElement(...tri).style.fill = '#b0b0b0';
+      centerPoint.getTriangle('NE').setFill('#a0a0a0');
+      centerPoint.getTriangle('NW').setFill('#a0a0a0');
 
-      tri = getTriangleAdjacentToPoint(center[0], center[1], 'W');
-      grid.getTriangleElement(...tri).style.fill = '#c0c0c0';
-      tri = getTriangleAdjacentToPoint(center[0], center[1], 'SW');
-      grid.getTriangleElement(...tri).style.fill = '#c0c0c0';
+      centerPoint.getTriangle('E').setFill('#b0b0b0');
+      centerPoint.getTriangle('SE').setFill('#b0b0b0');
 
+      centerPoint.getTriangle('W').setFill('#c0c0c0');
+      centerPoint.getTriangle('SW').setFill('#c0c0c0');
     }
 
     for (let i = 1; i < 8; i++) {

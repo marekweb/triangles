@@ -12,6 +12,8 @@ export class Grid {
 
   private svg: SVGElement;
   private triangleElements = new Map<string, SVGElement>();
+  private triangleReferences = new Map<string, Triangle>();
+  private pointReferences = new Map<string, Point>();
 
   constructor(
     container: HTMLElement,
@@ -84,7 +86,7 @@ export class Grid {
   }
 
   getTriangleElement(x: number, y: number, side: number): SVGElement {
-    const key = `${x},${y},${Number(side)}`;
+    const key = `${x},${y},${side}`;
     let triangleElement = this.triangleElements.get(key);
     if (!triangleElement) {
       triangleElement = this.createTriangleElement(x, y, side);
@@ -92,6 +94,26 @@ export class Grid {
     }
     console.log('triangle', key, triangleElement);
     return triangleElement;
+  }
+
+  getTriangleReference(x: number, y: number, side: 0 | 1): Triangle {
+    const key = `${x},${y},${side}`;
+    let triangleReference = this.triangleReferences.get(key);
+    if (!triangleReference) {
+      triangleReference = new Triangle(this, x, y, side);
+      this.triangleReferences.set(key, triangleReference);
+    }
+    return triangleReference;
+  }
+
+  getPointReference(x: number, y: number): Point {
+    const key = `${x},${y}`;
+    let pointReference = this.pointReferences.get(key);
+    if (!pointReference) {
+      pointReference = new Point(this, x, y);
+      this.pointReferences.set(key, pointReference);
+    }
+    return pointReference;
   }
 
   createCoordinateMarker(cx: number, cy: number): SVGCircleElement {
@@ -176,16 +198,22 @@ export class Grid {
 }
 
 class Point {
+  private grid: Grid;
   private x: number;
   private y: number;
-  constructor(x: number, y: number) {
+  constructor(grid: Grid, x: number, y: number) {
+    this.grid = grid;
     this.x = x;
     this.y = y;
   }
   getAdjacentPoint(direction: Direction) {
     return getAdjacentPoint(this.x, this.y, direction);
   }
-  getTriangle() {}
+  getTriangle(direction: Direction) {
+    return this.grid.getTriangleReference(
+      ...getTriangleAdjacentToPoint(this.x, this.y, direction)
+    );
+  }
 }
 
 class Triangle {
@@ -203,17 +231,26 @@ class Triangle {
   getCoordinates(): TriangleCoordinate {
     return [this.x, this.y, this.side];
   }
-  getPixelCoordinates() {
+  getPixelCoordinates(): PixelCoordinate {
     return this.grid.convertGridCoordinates(this.x, this.y);
   }
-  getElement() {
+  getElement(): SVGElement {
     return this.grid.getTriangleElement(this.x, this.y, this.side);
   }
   setFill(colorString: string) {
     this.getElement().style.fill = colorString;
   }
-  getAdjacent(direction: Direction) {
-    return getAdjacentTriangle(this.x, this.y, this.side, direction);
+  getAdjacent(direction: Direction): Triangle {
+    const tri = getAdjacentTriangle(this.x, this.y, this.side, direction);
+    return this.grid.getTriangleReference(...tri);
+  }
+  getPoints(): [PointCoordinate, PointCoordinate, PointCoordinate] {
+    return getTrianglePoints(this.x, this.y, this.side);
+  }
+  getPoint(direction: Direction): Point {
+    return this.grid.getPointReference(
+      ...getTrianglePointInDirection(this.x, this.y, this.side, direction)
+    );
   }
 }
 
@@ -222,10 +259,32 @@ function getTrianglePoints(
   y: number,
   side: number
 ): [PixelCoordinate, PixelCoordinate, PixelCoordinate] {
+  // [top, side, bottom]
   if (side) {
     return [[x, y], [x + 1, y], [x + 1, y + 1]];
   }
   return [[x, y], [x, y + 1], [x + 1, y + 1]];
+}
+
+function getTrianglePointInDirection(
+  x: number,
+  y: number,
+  side: 0 | 1,
+  direction: Direction
+): PointCoordinate {
+  // TODO: this could be optimized to avoid calculating all three points
+  const points = getTrianglePoints(x, y, side);
+  switch (direction) {
+    case 'N':
+      return points[0];
+
+    case 'E':
+    case 'W': // TODO add symbol for "side"?
+      return points[1];
+
+    case 'S':
+      return points[2];
+  }
 }
 
 export function getAdjacentTriangle(
