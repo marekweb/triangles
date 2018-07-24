@@ -1,7 +1,24 @@
+///<reference path="types.d.ts"/>
+
 const SQRT3 = Math.sqrt(3);
 
 export class Grid {
-  constructor(container, width, height, triangleAltitude) {
+  private width: number;
+  private height: number;
+  private triangleAltitude: number;
+  private triangleHalfSide: number;
+  private centerX: number;
+  private centerY: number;
+
+  private svg: SVGElement;
+  private triangleElements = new Map<string, SVGElement>();
+
+  constructor(
+    container: HTMLElement,
+    width: number,
+    height: number,
+    triangleAltitude: number
+  ) {
     if (!container) {
       throw new Error('Missing container');
     }
@@ -15,27 +32,29 @@ export class Grid {
 
     this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
-    this.svg.style.width = width + 'px';
-    this.svg.style.height = height + 'px';
+    this.svg.style.width = `${width}px`;
+    this.svg.style.height = `${height}px`;
     this.svg.style.display = 'block';
-    container.appendChild(this.svg);
 
-    this.triangleElements = {};
+    container.appendChild(this.svg);
   }
 
-  convertGridCoordinates(x, y) {
+  convertGridCoordinates(x: number, y: number): PixelCoordinate {
     const pixelX = this.centerX + (x - y) * this.triangleAltitude;
     const pixelY = this.centerY + (x + y) * this.triangleHalfSide;
     return [Math.round(pixelX), Math.round(pixelY)];
   }
 
-  unconvertGridCoordinatesToTriangle(Px, Py) {
+  unconvertGridCoordinatesToTriangle(
+    Px: number,
+    Py: number
+  ): TriangleCoordinate {
     const [x, y] = this.unconvertGridCoordinates(Px, Py);
-    const side = (x < 0 ? 1 - x % 1 : x % 1) > (y < 0 ? (1 - y) % 1 : y % 1);
-    return [x, y, side];
+    const side = (x < 0 ? 1 - (x % 1) : x % 1) > (y < 0 ? (1 - y) % 1 : y % 1);
+    return [x, y, side ? 0 : 1];
   }
 
-  unconvertGridCoordinates(Px, Py) {
+  unconvertGridCoordinates(Px: number, Py: number): PixelCoordinate {
     const Cx = this.centerX;
     const Cy = this.centerY;
     const H = this.triangleHalfSide;
@@ -45,14 +64,14 @@ export class Grid {
     return [x, y];
   }
 
-  convertGridCoordinatesToPointString(points) {
+  convertGridCoordinatesToPointString(points: PixelCoordinate[]): string {
     const pairs = points.map(([x, y]) =>
       this.convertGridCoordinates(x, y).join(',')
     );
     return pairs.join(' ');
   }
 
-  createTriangleElement(x, y, side) {
+  createTriangleElement(x: number, y: number, side: number) {
     const triangleElement = document.createElementNS(
       'http://www.w3.org/2000/svg',
       'polygon'
@@ -64,21 +83,18 @@ export class Grid {
     return triangleElement;
   }
 
-  getTriangleElement(x, y, side) {
+  getTriangleElement(x: number, y: number, side: number): SVGElement {
     const key = `${x},${y},${Number(side)}`;
-    let triangleElement = this.triangleElements[key];
+    let triangleElement = this.triangleElements.get(key);
     if (!triangleElement) {
-      triangleElement = this.triangleElements[key] = this.createTriangleElement(
-        x,
-        y,
-        side
-      );
+      triangleElement = this.createTriangleElement(x, y, side);
+      this.triangleElements.set(key, triangleElement);
     }
     console.log('triangle', key, triangleElement);
     return triangleElement;
   }
 
-  createCoordinateMarker(cx, cy) {
+  createCoordinateMarker(cx: number, cy: number): SVGCircleElement {
     const pointElement = document.createElementNS(
       'http://www.w3.org/2000/svg',
       'circle'
@@ -94,7 +110,7 @@ export class Grid {
     return pointElement;
   }
 
-  createPointElement(x, y) {
+  createPointElement(x: number, y: number): SVGCircleElement {
     const pointElement = document.createElementNS(
       'http://www.w3.org/2000/svg',
       'circle'
@@ -110,22 +126,23 @@ export class Grid {
     return pointElement;
   }
 
-  getPointElement(x, y) {
+  getPointElement(x: number, y: number): SVGElement {
     const key = `${x},${y}`;
-    let pointElement = this.triangleElements[key];
+    let pointElement = this.triangleElements.get(key);
     if (!pointElement) {
-      pointElement = this.triangleElements[key] = this.createPointElement(x, y);
+      pointElement = this.createPointElement(x, y);
+      this.triangleElements.set(key, pointElement);
     }
 
     return pointElement;
   }
 
-  setClassToPoint(x, y, cls) {
+  setClassToPoint(x: number, y: number, cls: string) {
     const point = this.getPointElement(x, y);
     point.setAttribute('class', cls);
   }
 
-  isCoordinateWithinScreen(x, y, margin = 0) {
+  isCoordinateWithinScreen(x: number, y: number, margin: number = 0): boolean {
     return !(
       x < 0 ||
       y < 0 ||
@@ -134,7 +151,7 @@ export class Grid {
     );
   }
 
-  getTriangleCenter(x, y, side) {
+  getTriangleCenter(x: number, y: number, side: number): PixelCoordinate {
     const points = getTrianglePoints(x, y, side);
     const [triangleCenterX, triangleCenterY] = points.reduce(
       ([triangleCenterX, triangleCenterY], [x, y]) => [
@@ -149,56 +166,74 @@ export class Grid {
     );
   }
 
-  isTriangleWithinScreen(x, y, side) {
+  isTriangleWithinScreen(x: number, y: number, side: number) {
     const center = this.getTriangleCenter(x, y, side);
-    const margin = this.triangleAltitude * 2 / 3;
-    return this.isCoordinateWithinScreen(...center, margin);
+    const margin = (this.triangleAltitude * 2) / 3;
+
+    // TODO Change this to a (...center, margin) with TS 3.0
+    return this.isCoordinateWithinScreen(center[0], center[1], margin);
   }
 }
 
 class Point {
-  constructor(x, y) {
+  private x: number;
+  private y: number;
+  constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
-  getAdjacentPoint(direction) {
-    return this.getAdjacentPoint(this.x, this.y, direction);
+  getAdjacentPoint(direction: Direction) {
+    return getAdjacentPoint(this.x, this.y, direction);
   }
   getTriangle() {}
 }
 
 class Triangle {
-  constructor(grid, x, y, side) {
+  private grid: Grid;
+  private x: number;
+  private y: number;
+  private side: 0 | 1;
+
+  constructor(grid: Grid, x: number, y: number, side: 0 | 1) {
     this.grid = grid;
     this.x = x;
     this.y = y;
     this.side = side;
   }
-  getCoordinates() {
+  getCoordinates(): TriangleCoordinate {
     return [this.x, this.y, this.side];
   }
   getPixelCoordinates() {
-    return this.grid.get;
+    return this.grid.convertGridCoordinates(this.x, this.y);
   }
   getElement() {
-    this.grid.getTriangleElement(this.x, this.y, this.side);
+    return this.grid.getTriangleElement(this.x, this.y, this.side);
   }
-  setFill(colorString) {
+  setFill(colorString: string) {
     this.getElement().style.fill = colorString;
   }
-  getAdjacent(direction) {
+  getAdjacent(direction: Direction) {
     return getAdjacentTriangle(this.x, this.y, this.side, direction);
   }
 }
 
-function getTrianglePoints(x, y, side) {
+function getTrianglePoints(
+  x: number,
+  y: number,
+  side: number
+): [PixelCoordinate, PixelCoordinate, PixelCoordinate] {
   if (side) {
     return [[x, y], [x + 1, y], [x + 1, y + 1]];
   }
   return [[x, y], [x, y + 1], [x + 1, y + 1]];
 }
 
-export function getAdjacentTriangle(x, y, side, direction) {
+export function getAdjacentTriangle(
+  x: number,
+  y: number,
+  side: 0 | 1,
+  direction: Direction
+): TriangleCoordinate {
   if (side) {
     switch (direction) {
       case 'E':
@@ -219,6 +254,9 @@ export function getAdjacentTriangle(x, y, side, direction) {
       case 'S':
       case '+X':
         return [x + 1, y, 0];
+
+      default:
+        throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
     }
   } else {
     switch (direction) {
@@ -240,11 +278,18 @@ export function getAdjacentTriangle(x, y, side, direction) {
       case 'S':
       case '+Y':
         return [x, y + 1, 1];
+
+      default:
+        throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
     }
   }
 }
 
-export function getAdjacentPoint(x, y, direction) {
+export function getAdjacentPoint(
+  x: number,
+  y: number,
+  direction: Direction
+): PointCoordinate {
   switch (direction) {
     case 'N':
       return [x - 1, y - 1];
@@ -258,10 +303,17 @@ export function getAdjacentPoint(x, y, direction) {
       return [x + 1, y];
     case 'SW':
       return [x, y + 1];
+
+    default:
+      throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
   }
 }
 
-export function getTriangleAdjacentToPoint(x, y, direction) {
+export function getTriangleAdjacentToPoint(
+  x: number,
+  y: number,
+  direction: Direction
+): TriangleCoordinate {
   switch (direction) {
     case 'W':
       return [x - 1, y, 1];
@@ -276,12 +328,18 @@ export function getTriangleAdjacentToPoint(x, y, direction) {
     case 'SE':
       return [x, y, 1];
     default:
-      throw new Error(`Invalid direction ${direction}`);
+      throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
   }
 }
 
-function setAttributes(element, attributes) {
+function setAttributes(
+  element: Element,
+  attributes: { [key: string]: string | number }
+) {
   for (const name in attributes) {
-    element.setAttribute(name, attributes[name]);
+    element.setAttribute(name, String(attributes[name]));
   }
 }
+
+(window as any).Point = Point;
+(window as any).Triangle = Triangle;
