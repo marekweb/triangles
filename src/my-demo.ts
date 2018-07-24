@@ -69,17 +69,28 @@ export class MyDemo extends Grid {
 
     function drawCube(grid: Grid, center: PointCoordinate) {
       let tri = getTriangleAdjacentToPoint(center[0], center[1], 'NW');
-
+      grid.getTriangleElement(...tri).style.fill = '#a0a0a0';
+      tri = getTriangleAdjacentToPoint(center[0], center[1], 'NE');
       grid.getTriangleElement(...tri).style.fill = '#a0a0a0';
 
-      tri = getAdjacentTriangle(tri[0], tri[1], tri[2], 'E');
+      tri = getTriangleAdjacentToPoint(center[0], center[1], 'E');
+      grid.getTriangleElement(...tri).style.fill = '#b0b0b0';
+      tri = getTriangleAdjacentToPoint(center[0], center[1], 'SE');
+      grid.getTriangleElement(...tri).style.fill = '#b0b0b0';
+
+      tri = getTriangleAdjacentToPoint(center[0], center[1], 'W');
+      grid.getTriangleElement(...tri).style.fill = '#c0c0c0';
+      tri = getTriangleAdjacentToPoint(center[0], center[1], 'SW');
+      grid.getTriangleElement(...tri).style.fill = '#c0c0c0';
+
     }
 
     for (let i = 1; i < 8; i++) {
       drawRing(this, [0, 0], i, `hsl(90, 50%, ${60 - i * 5}%)`);
     }
 
-    console.log(drawCube);
+    drawCube(this, [0, 0]);
+
     return;
     const triangleCoords = generateLotsOfTriangles(5);
 
