@@ -198,7 +198,7 @@ function getTrianglePoints(x, y, side) {
   return [[x, y], [x, y + 1], [x + 1, y + 1]];
 }
 
-function getAdjacentTriangle(x, y, side, direction) {
+export function getAdjacentTriangle(x, y, side, direction) {
   if (side) {
     switch (direction) {
       case 'E':
@@ -208,10 +208,16 @@ function getAdjacentTriangle(x, y, side, direction) {
       case 'SW':
         return [x + 1, y + 1, 0];
       case 'W':
+      case '+Y':
+      case '-X':
         return [x, y, 0];
       case 'NE':
+      case 'N':
+      case '-Y':
         return [x, y - 1, 0];
       case 'SE':
+      case 'S':
+      case '+X':
         return [x + 1, y, 0];
     }
   } else {
@@ -223,16 +229,22 @@ function getAdjacentTriangle(x, y, side, direction) {
       case 'SE':
         return [x + 1, y + 1, 1];
       case 'E':
+      case '-Y':
+      case '+X':
         return [x, y, 1];
       case 'NW':
+      case 'N':
+      case '-X':
         return [x - 1, y, 1];
       case 'SW':
+      case 'S':
+      case '+Y':
         return [x, y + 1, 1];
     }
   }
 }
 
-function getAdjacentPoint(x, y, direction) {
+export function getAdjacentPoint(x, y, direction) {
   switch (direction) {
     case 'N':
       return [x - 1, y - 1];
@@ -249,7 +261,7 @@ function getAdjacentPoint(x, y, direction) {
   }
 }
 
-function getTriangleAdjacentToPoint(x, y, direction) {
+export function getTriangleAdjacentToPoint(x, y, direction) {
   switch (direction) {
     case 'W':
       return [x - 1, y, 1];
