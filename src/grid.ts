@@ -1,4 +1,7 @@
 ///<reference path="types.d.ts"/>
+import { Triangle } from './triangle';
+import { Point } from './point';
+import { getTrianglePoints, setAttributes } from './utilities';
 
 const SQRT3 = Math.sqrt(3);
 
@@ -81,6 +84,9 @@ export class Grid {
     const points = getTrianglePoints(x, y, side);
     const pointsString = this.convertGridCoordinatesToPointString(points);
     triangleElement.setAttribute('points', pointsString);
+    // triangleElement.style.stroke = 'black';
+    // triangleElement.style.strokeWidth = '1';
+    triangleElement.style.strokeLinejoin = 'round';
     this.svg.appendChild(triangleElement);
     return triangleElement;
   }
@@ -92,7 +98,6 @@ export class Grid {
       triangleElement = this.createTriangleElement(x, y, side);
       this.triangleElements.set(key, triangleElement);
     }
-    console.log('triangle', key, triangleElement);
     return triangleElement;
   }
 
@@ -196,209 +201,3 @@ export class Grid {
     return this.isCoordinateWithinScreen(center[0], center[1], margin);
   }
 }
-
-class Point {
-  private grid: Grid;
-  private x: number;
-  private y: number;
-  constructor(grid: Grid, x: number, y: number) {
-    this.grid = grid;
-    this.x = x;
-    this.y = y;
-  }
-  getAdjacentPoint(direction: Direction) {
-    return getAdjacentPoint(this.x, this.y, direction);
-  }
-  getTriangle(direction: Direction) {
-    return this.grid.getTriangleReference(
-      ...getTriangleAdjacentToPoint(this.x, this.y, direction)
-    );
-  }
-}
-
-class Triangle {
-  private grid: Grid;
-  private x: number;
-  private y: number;
-  private side: 0 | 1;
-
-  constructor(grid: Grid, x: number, y: number, side: 0 | 1) {
-    this.grid = grid;
-    this.x = x;
-    this.y = y;
-    this.side = side;
-  }
-  getCoordinates(): TriangleCoordinate {
-    return [this.x, this.y, this.side];
-  }
-  getPixelCoordinates(): PixelCoordinate {
-    return this.grid.convertGridCoordinates(this.x, this.y);
-  }
-  getElement(): SVGElement {
-    return this.grid.getTriangleElement(this.x, this.y, this.side);
-  }
-  setFill(colorString: string) {
-    this.getElement().style.fill = colorString;
-  }
-  getAdjacent(direction: Direction): Triangle {
-    const tri = getAdjacentTriangle(this.x, this.y, this.side, direction);
-    return this.grid.getTriangleReference(...tri);
-  }
-  getPoints(): [PointCoordinate, PointCoordinate, PointCoordinate] {
-    return getTrianglePoints(this.x, this.y, this.side);
-  }
-  getPoint(direction: Direction): Point {
-    return this.grid.getPointReference(
-      ...getTrianglePointInDirection(this.x, this.y, this.side, direction)
-    );
-  }
-}
-
-function getTrianglePoints(
-  x: number,
-  y: number,
-  side: number
-): [PixelCoordinate, PixelCoordinate, PixelCoordinate] {
-  // [top, side, bottom]
-  if (side) {
-    return [[x, y], [x + 1, y], [x + 1, y + 1]];
-  }
-  return [[x, y], [x, y + 1], [x + 1, y + 1]];
-}
-
-function getTrianglePointInDirection(
-  x: number,
-  y: number,
-  side: 0 | 1,
-  direction: Direction
-): PointCoordinate {
-  // TODO: this could be optimized to avoid calculating all three points
-  const points = getTrianglePoints(x, y, side);
-  switch (direction) {
-    case 'N':
-      return points[0];
-
-    case 'E':
-    case 'W': // TODO add symbol for "side"?
-      return points[1];
-
-    case 'S':
-      return points[2];
-  }
-}
-
-export function getAdjacentTriangle(
-  x: number,
-  y: number,
-  side: 0 | 1,
-  direction: Direction
-): TriangleCoordinate {
-  if (side) {
-    switch (direction) {
-      case 'E':
-        return [x + 1, y - 1, 0];
-      case 'NW':
-        return [x - 1, y - 1, 0];
-      case 'SW':
-        return [x + 1, y + 1, 0];
-      case 'W':
-      case '+Y':
-      case '-X':
-        return [x, y, 0];
-      case 'NE':
-      case 'N':
-      case '-Y':
-        return [x, y - 1, 0];
-      case 'SE':
-      case 'S':
-      case '+X':
-        return [x + 1, y, 0];
-
-      default:
-        throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
-    }
-  } else {
-    switch (direction) {
-      case 'W':
-        return [x - 1, y + 1, 1];
-      case 'NE':
-        return [x - 1, y - 1, 1];
-      case 'SE':
-        return [x + 1, y + 1, 1];
-      case 'E':
-      case '-Y':
-      case '+X':
-        return [x, y, 1];
-      case 'NW':
-      case 'N':
-      case '-X':
-        return [x - 1, y, 1];
-      case 'SW':
-      case 'S':
-      case '+Y':
-        return [x, y + 1, 1];
-
-      default:
-        throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
-    }
-  }
-}
-
-export function getAdjacentPoint(
-  x: number,
-  y: number,
-  direction: Direction
-): PointCoordinate {
-  switch (direction) {
-    case 'N':
-      return [x - 1, y - 1];
-    case 'S':
-      return [x + 1, y + 1];
-    case 'NE':
-      return [x, y - 1];
-    case 'NW':
-      return [x - 1, y];
-    case 'SE':
-      return [x + 1, y];
-    case 'SW':
-      return [x, y + 1];
-
-    default:
-      throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
-  }
-}
-
-export function getTriangleAdjacentToPoint(
-  x: number,
-  y: number,
-  direction: Direction
-): TriangleCoordinate {
-  switch (direction) {
-    case 'W':
-      return [x - 1, y, 1];
-    case 'E':
-      return [x, y - 1, 0];
-    case 'NW':
-      return [x - 1, y - 1, 0];
-    case 'NE':
-      return [x - 1, y - 1, 1];
-    case 'SW':
-      return [x, y, 0];
-    case 'SE':
-      return [x, y, 1];
-    default:
-      throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
-  }
-}
-
-function setAttributes(
-  element: Element,
-  attributes: { [key: string]: string | number }
-) {
-  for (const name in attributes) {
-    element.setAttribute(name, String(attributes[name]));
-  }
-}
-
-(window as any).Point = Point;
-(window as any).Triangle = Triangle;
