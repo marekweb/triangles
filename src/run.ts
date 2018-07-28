@@ -1,9 +1,10 @@
-import { MyDemo } from './my-demo';
+import { Grid } from './grid';
+import { cubesDemo } from './cubes-demo';
 
 const root = document.getElementById('root');
 if (root) {
-  const t = new MyDemo(root, window.innerWidth, window.innerHeight, 30);
-  t.render();
+  const grid = new Grid(root, window.innerWidth, window.innerHeight, 30);
+  cubesDemo(grid);
 } else {
   console.log('Did not find #root element');
 }
