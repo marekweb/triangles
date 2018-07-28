@@ -1,4 +1,6 @@
 import { Point } from './point';
+import { Triangle } from './triangle';
+import { Grid} from './grid';
 
 export function drawCube(centerPoint: Point, hue: number = 0) {
   const top = `hsl(${hue}, 25%, 75%)`;
@@ -37,50 +39,83 @@ export function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function drawRing(
-  center: Point,
-  size: number,
-  color: string = 'orange'
-) {
+export function drawRing(center: Point, size: number) {
+  const triangles = [];
   const side = 1 + size * 2;
   const apex = center.getAdjacentPoint('N', size);
 
   let tri = apex.getTriangle('NE');
-  tri.setFill(color);
+  triangles.push(tri);
 
   for (let i = 0; i < side; i++) {
     tri = tri.getAdjacent('+X');
-    tri.setFill(color);
+    triangles.push(tri);
   }
 
   for (let i = 0; i < side; i++) {
     tri = tri.getAdjacent('S');
-    tri.setFill(color);
+    triangles.push(tri);
   }
 
   for (let i = 0; i < side; i++) {
     tri = tri.getAdjacent('+Y');
-    tri.setFill(color);
+    triangles.push(tri);
   }
 
   for (let i = 0; i < side; i++) {
     tri = tri.getAdjacent('-X');
-    tri.setFill(color);
+    triangles.push(tri);
   }
 
   for (let i = 0; i < side; i++) {
     tri = tri.getAdjacent('N');
-    tri.setFill(color);
+    triangles.push(tri);
   }
 
   for (let i = 0; i < side - 1; i++) {
     tri = tri.getAdjacent('-Y');
-    tri.setFill(color);
+    triangles.push(tri);
   }
+
+  return triangles;
+}
+
+export function drawHex(
+    center: Point,
+    size: number
+): Triangle[] {
+    const triangles: Triangle[] = [];
+    for (let i = 0; i < size; i++) {
+        triangles.push(...drawRing(center, i));
+    }
+    return triangles;
+}
+
+export function fillRing(
+  center: Point,
+  size: number,
+  color: string = 'orange'
+) {
+  drawRing(center, size).forEach(t => {
+    t.setFill(color);
+  });
 }
 
 export function drawConcentricGradient(center: Point) {
   for (let i = 1; i < 16; i++) {
-    drawRing(center, i, `hsl(90, 50%, ${60 - i * 3}%)`);
+    fillRing(center, i, `hsl(90, 50%, ${60 - i * 3}%)`);
   }
+}
+
+export function getAllTrianglesWithinScreen(grid: Grid) {
+    const triangles: Triangle[] = [];
+    const center = grid.getPointReference(0, 0);
+    let i = 5;
+    while (true) {
+        const ring = drawRing(center, i);
+        if (ring.every(t => !t.isWithinScreen())) {
+            return triangles;
+        }
+        triangles.push(...ring);
+    }
 }

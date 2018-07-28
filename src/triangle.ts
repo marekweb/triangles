@@ -18,29 +18,40 @@ export class Triangle {
     this.y = y;
     this.side = side;
   }
+
   getCoordinates(): TriangleCoordinate {
     return [this.x, this.y, this.side];
   }
+
   getPixelCoordinates(): PixelCoordinate {
     return this.grid.convertGridCoordinates(this.x, this.y);
   }
+
   getElement(): SVGElement {
     return this.grid.getTriangleElement(this.x, this.y, this.side);
   }
+
   setFill(colorString: string) {
     this.getElement().style.fill = colorString;
   }
+
   getAdjacent(direction: Direction): Triangle {
     const tri = getAdjacentTriangle(this.x, this.y, this.side, direction);
     return this.grid.getTriangleReference(...tri);
   }
+
   getPoints(): [PointCoordinate, PointCoordinate, PointCoordinate] {
     return getTrianglePoints(this.x, this.y, this.side);
   }
+
   getPoint(direction: Direction): Point {
     return this.grid.getPointReference(
       ...getTrianglePointInDirection(this.x, this.y, this.side, direction)
     );
+  }
+
+  isWithinScreen() {
+    return this.grid.isTriangleWithinScreen(this.x, this.y, this.side);
   }
 }
 

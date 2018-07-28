@@ -197,7 +197,6 @@ export class Grid {
     const center = this.getTriangleCenter(x, y, side);
     const margin = (this.triangleAltitude * 2) / 3;
 
-    // TODO Change this to a (...center, margin) with TS 3.0
     return this.isCoordinateWithinScreen(center[0], center[1], margin);
   }
 }
