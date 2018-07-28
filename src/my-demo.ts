@@ -1,124 +1,26 @@
-import {
-  Grid,
-  getAdjacentPoint,
-  getAdjacentTriangle,
-  getTriangleAdjacentToPoint
-} from './grid';
-
-function generateLotsOfTriangles(n: number): TriangleCoordinate[] {
-  const list: TriangleCoordinate[] = [];
-  for (let x = -n; x < n; x++) {
-    for (let y = -n; y < n; y++) {
-      list.push([x, y, 0]);
-      list.push([x, y, 1]);
-    }
-  }
-  return list;
-}
+import { Grid } from './grid';
+import { drawCubeTower, randomInt, delay } from './draw';
 
 export class MyDemo extends Grid {
-  render() {
-    let point: PointCoordinate = [0, 0];
-    // TODO rest args when using TS 3.0
-    this.getPointElement(point[0], point[1]).style.fill = 'red';
+  async render() {
+    while (true) {
+      const x = randomInt(-10, 10);
+      const y = randomInt(-10, 10);
 
-    function drawRing(
-      grid: Grid,
-      center: PointCoordinate,
-      size: number,
-      color: string = 'orange'
-    ) {
-      let point: PointCoordinate = center;
-      const side = 1 + size * 2;
-      for (let i = 0; i < size; i++) {
-        point = getAdjacentPoint(point[0], point[1], 'N');
+      const p = this.getPointReference(x, y);
+
+      const roll = Math.random();
+      if (roll < 0.33) {
+        await drawCubeTower(p, 'SE', randomInt(5, 12));
+      } else if (roll < 0.66) {
+        await drawCubeTower(p, 'SW', randomInt(5, 12));
+      } else {
+        await drawCubeTower(p, 'N', randomInt(5, 12));
       }
 
-      const ptEl = grid.getPointElement(...point);
-      ptEl.style.fill = 'red';
-
-      // --
-      let tri: TriangleCoordinate = getTriangleAdjacentToPoint(
-        point[0],
-        point[1],
-        'NE'
-      );
-      grid.getTriangleElement(...tri).style.fill = color;
-      for (let i = 0; i < side; i++) {
-        tri = getAdjacentTriangle(tri[0], tri[1], tri[2], '+X');
-        grid.getTriangleElement(...tri).style.fill = color;
-      }
-
-      for (let i = 0; i < side; i++) {
-        tri = getAdjacentTriangle(tri[0], tri[1], tri[2], 'S');
-        grid.getTriangleElement(...tri).style.fill = color;
-      }
-
-      for (let i = 0; i < side; i++) {
-        tri = getAdjacentTriangle(tri[0], tri[1], tri[2], '+Y');
-        grid.getTriangleElement(...tri).style.fill = color;
-      }
-
-      for (let i = 0; i < side; i++) {
-        tri = getAdjacentTriangle(tri[0], tri[1], tri[2], '-X');
-        grid.getTriangleElement(...tri).style.fill = color;
-      }
-
-      for (let i = 0; i < side; i++) {
-        tri = getAdjacentTriangle(tri[0], tri[1], tri[2], 'N');
-        grid.getTriangleElement(...tri).style.fill = color;
-      }
-
-      for (let i = 0; i < side - 1; i++) {
-        tri = getAdjacentTriangle(tri[0], tri[1], tri[2], '-Y');
-        grid.getTriangleElement(...tri).style.fill = color;
-      }
+      await delay(2500);
     }
-
-    function drawCube(grid: Grid, center: PointCoordinate) {
-      const centerPoint = grid.getPointReference(...center);
-
-      centerPoint.getTriangle('NE').setFill('#a0a0a0');
-      centerPoint.getTriangle('NW').setFill('#a0a0a0');
-
-      centerPoint.getTriangle('E').setFill('#b0b0b0');
-      centerPoint.getTriangle('SE').setFill('#b0b0b0');
-
-      centerPoint.getTriangle('W').setFill('#c0c0c0');
-      centerPoint.getTriangle('SW').setFill('#c0c0c0');
-    }
-
-    for (let i = 1; i < 8; i++) {
-      drawRing(this, [0, 0], i, `hsl(90, 50%, ${60 - i * 5}%)`);
-    }
-
-    drawCube(this, [0, 0]);
 
     return;
-    const triangleCoords = generateLotsOfTriangles(5);
-
-    const triangleElements = triangleCoords.map(t =>
-      this.createTriangleElement(...t)
-    );
-
-    setInterval(() => {
-      const t =
-        triangleElements[Math.floor(Math.random() * triangleElements.length)];
-      const flip = Math.floor(Math.random() * 3);
-
-      switch (flip) {
-        case 0:
-          t.style.fill = 'transparent';
-          break;
-
-        case 1:
-          t.style.fill = `hsl(${Math.random() * 60 + 160},50%,6%)`;
-          break;
-
-        case 2:
-          t.style.fill = `hsl(${Math.random() * 60 + 160},50%,50%)`;
-          break;
-      }
-    }, 100);
   }
 }
