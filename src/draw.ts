@@ -1,6 +1,6 @@
 import { Point } from './point';
 import { Triangle } from './triangle';
-import { Grid} from './grid';
+import { Grid } from './grid';
 
 export function drawCube(centerPoint: Point, hue: number = 0) {
   const top = `hsl(${hue}, 25%, 75%)`;
@@ -80,15 +80,12 @@ export function drawRing(center: Point, size: number) {
   return triangles;
 }
 
-export function drawHex(
-    center: Point,
-    size: number
-): Triangle[] {
-    const triangles: Triangle[] = [];
-    for (let i = 0; i < size; i++) {
-        triangles.push(...drawRing(center, i));
-    }
-    return triangles;
+export function drawHex(center: Point, size: number): Triangle[] {
+  const triangles: Triangle[] = [];
+  for (let i = 0; i < size; i++) {
+    triangles.push(...drawRing(center, i));
+  }
+  return triangles;
 }
 
 export function fillRing(
@@ -108,14 +105,14 @@ export function drawConcentricGradient(center: Point) {
 }
 
 export function getAllTrianglesWithinScreen(grid: Grid) {
-    const triangles: Triangle[] = [];
-    const center = grid.getPointReference(0, 0);
-    let i = 5;
-    while (true) {
-        const ring = drawRing(center, i);
-        if (ring.every(t => !t.isWithinScreen())) {
-            return triangles;
-        }
-        triangles.push(...ring);
+  const triangles: Triangle[] = [];
+  const center = grid.getPointReference(0, 0);
+  let i = 5;
+  while (true) {
+    const ring = drawRing(center, i);
+    if (ring.every(t => !t.isWithinScreen())) {
+      return triangles;
     }
+    triangles.push(...ring);
+  }
 }

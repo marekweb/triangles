@@ -12,12 +12,12 @@ export class Point {
   }
 
   getPointCoordinate(): PointCoordinate {
-    return [this.x, this.y];
+    return { x: this.x, y: this.y };
   }
 
   getAdjacentPoint(direction: Direction, distance: number = 1) {
     return this.grid.getPointReference(
-      ...getAdjacentPoint(this.x, this.y, direction, distance)
+      getAdjacentPoint(this.x, this.y, direction, distance)
     );
   }
 

@@ -111,7 +111,8 @@ export class Grid {
     return triangleReference;
   }
 
-  getPointReference(x: number, y: number): Point {
+  getPointReference(p: PointCoordinate): Point {
+    const { x, y } = p;
     const key = `${x},${y}`;
     let pointReference = this.pointReferences.get(key);
     if (!pointReference) {

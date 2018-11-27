@@ -6,7 +6,7 @@ if (root) {
   const grid = new Grid(root, window.innerWidth, window.innerHeight, 30);
   cubesDemo(grid).catch(err => {
     console.error(err);
-  })
+  });
 } else {
   console.log('Did not find #root element');
 }

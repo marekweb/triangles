@@ -1,5 +1,3 @@
-type TriangleCoordinate = [number, number, 0 | 1];
-
 type PointJumpDirection = 'NNW' | 'NNE' | 'SSW' | 'SSE';
 
 type Direction =
@@ -17,5 +15,18 @@ type Direction =
   | '+X'
   | PointJumpDirection;
 
-type PixelCoordinate = [number, number];
-type PointCoordinate = [number, number];
+interface PixelCoordinate {
+  x: number;
+  y: number;
+}
+
+interface PointCoordinate {
+  x: number;
+  y: number;
+}
+
+interface TriangleCoordinate {
+  x: number;
+  y: number;
+  z: 0 | 1;
+}

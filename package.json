@@ -3,7 +3,7 @@
     "start": "parcel index.html",
     "serve": "serve",
     "format": "prettier --write --single-quote 'src/**/*.ts'",
-    "bundle": "rollup build/run.js --file bundle.js --format esm",
+    "bundle": "rollup build/run.js --file bundle.js --name 'bundle' --format esm",
     "build": "tsc && npm run bundle",
     "lint": "tslint -p tsconfig.json"
   },
