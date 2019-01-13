@@ -16,15 +16,13 @@ export class Point {
   }
 
   getAdjacentPoint(direction: Direction, distance: number = 1) {
-    return this.grid.getPointReference(
-      getAdjacentPoint(this.x, this.y, direction, distance)
-    );
+    const p = getAdjacentPoint(this.x, this.y, direction, distance);
+    return this.grid.getPointReference(p.x, p.y);
   }
 
   getTriangle(direction: Direction) {
-    return this.grid.getTriangleReference(
-      ...getTriangleAdjacentToPoint(this.x, this.y, direction)
-    );
+    const t = getTriangleAdjacentToPoint(this.x, this.y, direction);
+    return this.grid.getTriangleReference(t.x, t.y, t.z);
   }
 
   getElement(): SVGElement {

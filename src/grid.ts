@@ -47,16 +47,16 @@ export class Grid {
   convertGridCoordinates(x: number, y: number): PixelCoordinate {
     const pixelX = this.centerX + (x - y) * this.triangleAltitude;
     const pixelY = this.centerY + (x + y) * this.triangleHalfSide;
-    return [Math.round(pixelX), Math.round(pixelY)];
+    return { x: Math.round(pixelX), y: Math.round(pixelY) };
   }
 
   unconvertGridCoordinatesToTriangle(
     Px: number,
     Py: number
   ): TriangleCoordinate {
-    const [x, y] = this.unconvertGridCoordinates(Px, Py);
+    const { x, y } = this.unconvertGridCoordinates(Px, Py);
     const side = (x < 0 ? 1 - (x % 1) : x % 1) > (y < 0 ? (1 - y) % 1 : y % 1);
-    return [x, y, side ? 0 : 1];
+    return { x, y, z: side ? 0 : 1 };
   }
 
   unconvertGridCoordinates(Px: number, Py: number): PixelCoordinate {
@@ -66,13 +66,14 @@ export class Grid {
     const A = this.triangleAltitude;
     const x = ((Px - Cx) / A + (Py - Cy) / H) / 2;
     const y = ((Py - Cy) / H - (Px - Cx) / A) / 2;
-    return [x, y];
+    return { x, y };
   }
 
   convertGridCoordinatesToPointString(points: PixelCoordinate[]): string {
-    const pairs = points.map(([x, y]) =>
-      this.convertGridCoordinates(x, y).join(',')
-    );
+    const pairs = points.map(({ x, y }) => {
+      const { x: pixelX, y: pixelY } = this.convertGridCoordinates(x, y);
+      return `${pixelX},${pixelY}`;
+    });
     return pairs.join(' ');
   }
 
@@ -84,9 +85,12 @@ export class Grid {
     const points = getTrianglePoints(x, y, side);
     const pointsString = this.convertGridCoordinatesToPointString(points);
     triangleElement.setAttribute('points', pointsString);
+
+    // These can be usedas initial styles
+    // triangleElement.style.fill = 'white';
     // triangleElement.style.stroke = 'black';
-    // triangleElement.style.strokeWidth = '1';
     triangleElement.style.strokeLinejoin = 'round';
+
     this.svg.appendChild(triangleElement);
     return triangleElement;
   }
@@ -111,8 +115,7 @@ export class Grid {
     return triangleReference;
   }
 
-  getPointReference(p: PointCoordinate): Point {
-    const { x, y } = p;
+  getPointReference(x: number, y: number): Point {
     const key = `${x},${y}`;
     let pointReference = this.pointReferences.get(key);
     if (!pointReference) {
@@ -143,7 +146,7 @@ export class Grid {
       'http://www.w3.org/2000/svg',
       'circle'
     );
-    const [cx, cy] = this.convertGridCoordinates(x, y);
+    const { x: cx, y: cy } = this.convertGridCoordinates(x, y);
     setAttributes(pointElement, {
       cx,
       cy,
@@ -181,23 +184,16 @@ export class Grid {
 
   getTriangleCenter(x: number, y: number, side: number): PixelCoordinate {
     const points = getTrianglePoints(x, y, side);
-    const [triangleCenterX, triangleCenterY] = points.reduce(
-      ([triangleCenterX, triangleCenterY], [x, y]) => [
-        triangleCenterX + x,
-        triangleCenterY + y
-      ],
-      [0, 0]
-    );
-    return this.convertGridCoordinates(
-      triangleCenterX / 3,
-      triangleCenterY / 3
-    );
+    const triangleCenterX = (points[0].x + points[1].x + points[2].x) / 3;
+    const triangleCenterY = (points[0].x + points[1].x + points[2].x) / 3;
+
+    return this.convertGridCoordinates(triangleCenterX, triangleCenterY);
   }
 
   isTriangleWithinScreen(x: number, y: number, side: number) {
     const center = this.getTriangleCenter(x, y, side);
     const margin = (this.triangleAltitude * 2) / 3;
 
-    return this.isCoordinateWithinScreen(center[0], center[1], margin);
+    return this.isCoordinateWithinScreen(center.x, center.y, margin);
   }
 }

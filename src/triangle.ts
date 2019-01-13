@@ -20,7 +20,7 @@ export class Triangle {
   }
 
   getCoordinates(): TriangleCoordinate {
-    return [this.x, this.y, this.side];
+    return { x: this.x, y: this.y, z: this.side };
   }
 
   getPixelCoordinates(): PixelCoordinate {
@@ -32,12 +32,23 @@ export class Triangle {
   }
 
   setFill(colorString: string) {
-    this.getElement().style.fill = colorString;
+    // `requestAnimationFrame` is necessary here for CSS transitions to work
+    // when the element is first created. `getElement` will lazily create the
+    // element when it gets called the first time. So it needs to be called
+    // before the next frame, otherwise the animation won't trigger because the
+    // creation of the element and the update of the style property will get
+    // batched into one update of the DOM.
+    const triangleElement = this.getElement();
+    window.requestAnimationFrame(() => {
+      setTimeout(() => {
+        triangleElement.style.fill = colorString;
+      });
+    });
   }
 
   getAdjacent(direction: Direction): Triangle {
     const tri = getAdjacentTriangle(this.x, this.y, this.side, direction);
-    return this.grid.getTriangleReference(...tri);
+    return this.grid.getTriangleReference(tri.x, tri.y, tri.z);
   }
 
   getPoints(): [PointCoordinate, PointCoordinate, PointCoordinate] {
@@ -45,9 +56,8 @@ export class Triangle {
   }
 
   getPoint(direction: Direction): Point {
-    return this.grid.getPointReference(
-      ...getTrianglePointInDirection(this.x, this.y, this.side, direction)
-    );
+    const p = getTrianglePointInDirection(this.x, this.y, this.side, direction);
+    return this.grid.getPointReference(p.x, p.y);
   }
 
   isWithinScreen() {

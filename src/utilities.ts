@@ -5,9 +5,9 @@ export function getTrianglePoints(
 ): [PixelCoordinate, PixelCoordinate, PixelCoordinate] {
   // [top, side, bottom]
   if (side) {
-    return [[x, y], [x + 1, y], [x + 1, y + 1]];
+    return [{ x, y }, { x: x + 1, y }, { x: x + 1, y: y + 1 }];
   }
-  return [[x, y], [x, y + 1], [x + 1, y + 1]];
+  return [{ x, y }, { x, y: y + 1 }, { x: x + 1, y: y + 1 }];
 }
 
 export function getAdjacentTriangle(
@@ -19,23 +19,23 @@ export function getAdjacentTriangle(
   if (side) {
     switch (direction) {
       case 'E':
-        return [x + 1, y - 1, 0];
+        return { x: x + 1, y: y - 1, z: 0 };
       case 'NW':
-        return [x - 1, y - 1, 0];
+        return { x: x - 1, y: y - 1, z: 0 };
       case 'SW':
-        return [x + 1, y + 1, 0];
+        return { x: x + 1, y: y + 1, z: 0 };
       case 'W':
       case '+Y':
       case '-X':
-        return [x, y, 0];
+        return { x, y, z: 0 };
       case 'NE':
       case 'N':
       case '-Y':
-        return [x, y - 1, 0];
+        return { x, y: y - 1, z: 0 };
       case 'SE':
       case 'S':
       case '+X':
-        return [x + 1, y, 0];
+        return { x: x + 1, y, z: 0 };
 
       default:
         throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
@@ -43,23 +43,23 @@ export function getAdjacentTriangle(
   } else {
     switch (direction) {
       case 'W':
-        return [x - 1, y + 1, 1];
+        return { x: x - 1, y: y + 1, z: 1 };
       case 'NE':
-        return [x - 1, y - 1, 1];
+        return { x: x - 1, y: y - 1, z: 1 };
       case 'SE':
-        return [x + 1, y + 1, 1];
+        return { x: x + 1, y: y + 1, z: 1 };
       case 'E':
       case '-Y':
       case '+X':
-        return [x, y, 1];
+        return { x, y, z: 1 };
       case 'NW':
       case 'N':
       case '-X':
-        return [x - 1, y, 1];
+        return { x: x - 1, y, z: 1 };
       case 'SW':
       case 'S':
       case '+Y':
-        return [x, y + 1, 1];
+        return { x, y: y + 1, z: 1 };
 
       default:
         throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
@@ -75,29 +75,29 @@ export function getAdjacentPoint(
 ): PointCoordinate {
   switch (direction) {
     case 'N':
-      return [x - n, y - n];
+      return { x: x - n, y: y - n };
     case 'S':
-      return [x + n, y + n];
+      return { x: x + n, y: y + n };
     case 'NE':
-      return [x, y - n];
+      return { x, y: y - n };
     case 'NW':
-      return [x - n, y];
+      return { x: x - n, y };
     case 'SE':
-      return [x + n, y];
+      return { x: x + n, y };
     case 'SW':
-      return [x, y + n];
+      return { x, y: y + n };
     case 'NNW':
-      return [x - 2 * n, y - n];
+      return { x: x - 2 * n, y: y - n };
     case 'NNE':
-      return [x - n, y - 2 * n];
+      return { x: x - n, y: y - 2 * n };
     case 'W':
-      return [x - n, y + n];
+      return { x: x - n, y: y + n };
     case 'E':
-      return [x + n, y - n];
+      return { x: x + n, y: y - n };
     case 'SSW':
-      return [x + n, y + 2 * n];
+      return { x: x + n, y: y + 2 * n };
     case 'SSE':
-      return [x + 2 * n, y + n];
+      return { x: x + 2 * n, y: y + n };
 
     default:
       throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
@@ -111,17 +111,17 @@ export function getTriangleAdjacentToPoint(
 ): TriangleCoordinate {
   switch (direction) {
     case 'W':
-      return [x - 1, y, 1];
+      return { x: x - 1, y, z: 1 };
     case 'E':
-      return [x, y - 1, 0];
+      return { x, y: y - 1, z: 0 };
     case 'NW':
-      return [x - 1, y - 1, 0];
+      return { x: x - 1, y: y - 1, z: 0 };
     case 'NE':
-      return [x - 1, y - 1, 1];
+      return { x: x - 1, y: y - 1, z: 1 };
     case 'SW':
-      return [x, y, 0];
+      return { x, y, z: 0 };
     case 'SE':
-      return [x, y, 1];
+      return { x, y, z: 1 };
     default:
       throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
   }

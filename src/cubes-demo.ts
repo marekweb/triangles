@@ -6,7 +6,7 @@ export async function cubesDemo(grid: Grid) {
     const x = randomInt(-10, 10);
     const y = randomInt(-10, 10);
 
-    const p = grid.getPointReference({ x, y });
+    const p = grid.getPointReference(x, y);
 
     const roll = Math.random();
     if (roll < 0.33) {
