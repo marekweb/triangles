@@ -21,11 +21,11 @@ export async function drawCubeTower(
   p: Point,
   direction: 'N' | 'SW' | 'SE',
   height: number,
-  interval: number = 200
+  interval: number = 600
 ) {
   const hue = randomInt(0, 360);
   for (let i = 0; i < height; i++) {
-    drawCube(p, hue);
+    drawCube(p, hue + 10 * i);
     await delay(interval);
     p = p.getAdjacentPoint(direction);
   }
