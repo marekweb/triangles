@@ -54,9 +54,10 @@ export class Grid {
     Px: number,
     Py: number
   ): TriangleCoordinate {
+    // TODO This is close, but it doesn't work correctly
     const { x, y } = this.unconvertGridCoordinates(Px, Py);
     const side = (x < 0 ? 1 - (x % 1) : x % 1) > (y < 0 ? (1 - y) % 1 : y % 1);
-    return { x, y, z: side ? 0 : 1 };
+    return { x: Math.floor(x), y: Math.floor(y), z: side ? 0 : 1 };
   }
 
   unconvertGridCoordinates(Px: number, Py: number): PixelCoordinate {
@@ -106,6 +107,13 @@ export class Grid {
   }
 
   getTriangleReference(x: number, y: number, side: 0 | 1): Triangle {
+    if (
+      !Number.isInteger(x) ||
+      !Number.isInteger(y) ||
+      (side !== 0 && side !== 1)
+    ) {
+      throw new Error('getTriangleReference: invalid coordinates');
+    }
     const key = `${x},${y},${side}`;
     let triangleReference = this.triangleReferences.get(key);
     if (!triangleReference) {
@@ -173,7 +181,11 @@ export class Grid {
     point.setAttribute('class', cls);
   }
 
-  isCoordinateWithinScreen(x: number, y: number, margin: number = 0): boolean {
+  isPixelCoordinateWithinScreen(
+    x: number,
+    y: number,
+    margin: number = 0
+  ): boolean {
     return !(
       x < 0 ||
       y < 0 ||
@@ -194,6 +206,11 @@ export class Grid {
     const center = this.getTriangleCenter(x, y, side);
     const margin = (this.triangleAltitude * 2) / 3;
 
-    return this.isCoordinateWithinScreen(center.x, center.y, margin);
+    return this.isPixelCoordinateWithinScreen(center.x, center.y, margin);
+  }
+
+  isPointWithinScreen(x: number, y: number) {
+    const { x: pixelX, y: pixelY } = this.convertGridCoordinates(x, y);
+    return this.isPixelCoordinateWithinScreen(pixelX, pixelY);
   }
 }

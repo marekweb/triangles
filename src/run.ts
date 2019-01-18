@@ -1,10 +1,10 @@
 import { Grid } from './grid';
-import { cubesDemo } from './cubes-demo';
+import { cubePipes } from './cube-pipes';
 
 const root = document.getElementById('root');
 if (root) {
   const grid = new Grid(root, window.innerWidth, window.innerHeight, 30);
-  cubesDemo(grid).catch(err => {
+  cubePipes(grid).catch(err => {
     console.error(err);
   });
 } else {

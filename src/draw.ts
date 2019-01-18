@@ -19,20 +19,26 @@ export function drawCube(centerPoint: Point, hue: number = 0) {
 
 export async function drawCubeTower(
   p: Point,
-  direction: 'N' | 'SW' | 'SE',
+  // direction: 'N' | 'SW' | 'SE',
+  direction: Direction,
   height: number,
+  hue: number,
   interval: number = 600
 ) {
-  const hue = randomInt(0, 360);
   for (let i = 0; i < height; i++) {
-    drawCube(p, hue + 10 * i);
+    drawCube(p, hue + 3 * i);
     await delay(interval);
     p = p.getAdjacentPoint(direction);
   }
+  return hue + 10 * height;
 }
 
 export function randomInt(a: number, b: number): number {
   return Math.floor(Math.random() * (b - a) + a);
+}
+
+export function randomChoice<T>(array: T[]): T {
+  return array[randomInt(0, array.length)];
 }
 
 export function delay(ms: number): Promise<void> {

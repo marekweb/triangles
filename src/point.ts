@@ -28,4 +28,8 @@ export class Point {
   getElement(): SVGElement {
     return this.grid.getPointElement(this.x, this.y);
   }
+
+  isWithinScreen(): boolean {
+    return this.grid.isPointWithinScreen(this.x, this.y);
+  }
 }
