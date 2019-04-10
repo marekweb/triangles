@@ -3,9 +3,12 @@ import { Triangle } from './triangle';
 import { Grid } from './grid';
 
 export function drawCube(centerPoint: Point, hue: number = 0) {
-  const top = `hsl(${hue}, 25%, 75%)`;
-  const left = `hsl(${hue}, 25%, 50%)`;
-  const right = `hsl(${hue}, 25%, 25%)`;
+  hue = Math.round(hue) % 360;
+  const l = randomInt(85, 90);
+  const s = randomInt(40, 60);
+  const top = `hsl(${hue}, ${s}%, ${l}%)`;
+  const left = `hsl(${hue}, ${s - 10}%, ${l - 25}%)`;
+  const right = `hsl(${hue}, ${s - 20}%, ${l - 50}%)`;
 
   centerPoint.getTriangle('NE').setFill(top);
   centerPoint.getTriangle('NW').setFill(top);
@@ -26,11 +29,11 @@ export async function drawCubeTower(
   interval: number = 600
 ) {
   for (let i = 0; i < height; i++) {
-    drawCube(p, hue + 3 * i);
+    drawCube(p, hue + 1 * i);
     await delay(interval);
     p = p.getAdjacentPoint(direction);
   }
-  return hue + 10 * height;
+  return hue + 1 * height;
 }
 
 export function randomInt(a: number, b: number): number {

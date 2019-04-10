@@ -12,9 +12,9 @@ export async function cubePipes(grid: Grid) {
       distance = randomInt(1, 6);
       nextP = p.getAdjacentPoint(direction, distance);
     } while (!nextP.isWithinScreen());
-    hue = await drawCubeTower(p, direction, distance, hue, 25);
+    hue = await drawCubeTower(p, direction, distance, hue, 200);
     hue = hue % 360;
     p = nextP;
-    await delay(25);
+    await delay(0);
   }
 }
