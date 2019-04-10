@@ -2,7 +2,7 @@ export function getTrianglePoints(
   x: number,
   y: number,
   side: number
-): [PixelCoordinate, PixelCoordinate, PixelCoordinate] {
+): PixelCoordinateTriple {
   // [top, side, bottom]
   if (side) {
     return [{ x, y }, { x: x + 1, y }, { x: x + 1, y: y + 1 }];
@@ -158,4 +158,23 @@ export function getTrianglePointInDirection(
     default:
       throw new Error(`Unknown direction "${JSON.stringify(direction)}"`);
   }
+}
+
+export function scalePoints(
+  points: PixelCoordinate[],
+  factor: number,
+  center: PixelCoordinate
+) {
+  points = points.map(p => ({ x: p.x - center.x, y: p.y - center.y }));
+  points = points.map(p => ({ x: p.x *= factor, y: p.y *= factor }));
+  return points.map(p => ({ x: p.x + center.x, y: p.y + center.y }));
+}
+
+export function getTriangleCenter(
+  points: PixelCoordinateTriple
+): PixelCoordinate {
+  const triangleCenterX = (points[0].x + points[1].x + points[2].x) / 3;
+  const triangleCenterY = (points[0].y + points[1].y + points[2].y) / 3;
+
+  return { x: triangleCenterX, y: triangleCenterY };
 }

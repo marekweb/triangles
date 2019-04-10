@@ -42,6 +42,7 @@ export class Triangle {
     window.requestAnimationFrame(() => {
       setTimeout(() => {
         triangleElement.style.fill = colorString;
+        triangleElement.style.stroke = colorString;
       });
     });
   }

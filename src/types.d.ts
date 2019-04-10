@@ -20,6 +20,12 @@ interface PixelCoordinate {
   y: number;
 }
 
+type PixelCoordinateTriple = [
+  PixelCoordinate,
+  PixelCoordinate,
+  PixelCoordinate
+];
+
 interface PointCoordinate {
   x: number;
   y: number;

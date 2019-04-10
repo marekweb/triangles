@@ -1,7 +1,12 @@
 ///<reference path="types.d.ts"/>
 import { Triangle } from './triangle';
 import { Point } from './point';
-import { getTrianglePoints, setAttributes } from './utilities';
+import {
+  getTrianglePoints,
+  setAttributes,
+  getTriangleCenter,
+  scalePoints
+} from './utilities';
 
 const SQRT3 = Math.sqrt(3);
 
@@ -12,6 +17,7 @@ export class Grid {
   private triangleHalfSide: number;
   private centerX: number;
   private centerY: number;
+  private triangleScaleFactor: number = 0.7;
 
   private svg: SVGElement;
   private triangleElements = new Map<string, SVGElement>();
@@ -83,14 +89,25 @@ export class Grid {
       'http://www.w3.org/2000/svg',
       'polygon'
     );
-    const points = getTrianglePoints(x, y, side);
+
+    let points = getTrianglePoints(x, y, side);
+
+    const center = getTriangleCenter(points);
+    points = scalePoints(
+      points,
+      this.triangleScaleFactor,
+      center
+    ) as PixelCoordinateTriple;
+
     const pointsString = this.convertGridCoordinatesToPointString(points);
     triangleElement.setAttribute('points', pointsString);
 
     // These can be usedas initial styles
     // triangleElement.style.fill = 'white';
-    // triangleElement.style.stroke = 'black';
+    triangleElement.style.stroke = 'black';
+    triangleElement.style.strokeWidth = String(this.triangleScaleFactor * 5);
     triangleElement.style.strokeLinejoin = 'round';
+    triangleElement.style.strokeLinecap = 'round';
 
     this.svg.appendChild(triangleElement);
     return triangleElement;
@@ -196,10 +213,9 @@ export class Grid {
 
   getTriangleCenter(x: number, y: number, side: number): PixelCoordinate {
     const points = getTrianglePoints(x, y, side);
-    const triangleCenterX = (points[0].x + points[1].x + points[2].x) / 3;
-    const triangleCenterY = (points[0].x + points[1].x + points[2].x) / 3;
-
-    return this.convertGridCoordinates(triangleCenterX, triangleCenterY);
+    const center = getTriangleCenter(points);
+    // TODO: verify why convertGridCoordinates is necessary here, or is it a bug
+    return this.convertGridCoordinates(center.x, center.y);
   }
 
   isTriangleWithinScreen(x: number, y: number, side: number) {

@@ -22,10 +22,9 @@ export function drawCube(centerPoint: Point, hue: number = 0) {
 
 export async function drawCubeTower(
   p: Point,
-  // direction: 'N' | 'SW' | 'SE',
   direction: Direction,
   height: number,
-  hue: number,
+  hue: number = 0,
   interval: number = 600
 ) {
   for (let i = 0; i < height; i++) {
