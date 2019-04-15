@@ -102,8 +102,7 @@ export class Grid {
     const pointsString = this.convertGridCoordinatesToPointString(points);
     triangleElement.setAttribute('points', pointsString);
 
-    // These can be usedas initial styles
-    // triangleElement.style.fill = 'white';
+    triangleElement.style.fill = 'black';
     triangleElement.style.stroke = 'black';
     triangleElement.style.strokeWidth = String(this.triangleScaleFactor * 5);
     triangleElement.style.strokeLinejoin = 'round';

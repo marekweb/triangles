@@ -1,7 +1,7 @@
 import { Grid } from './grid';
 import { drawCubeTower, randomInt, randomChoice, delay } from './draw';
 
-export async function cubePipes(grid: Grid) {
+export default async function cubePipes(grid: Grid) {
   let p = grid.getPointReference(0, 0);
   let hue = 0;
   const directions: Direction[] = ['N', 'SW', 'SE'];
