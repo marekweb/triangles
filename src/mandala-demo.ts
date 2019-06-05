@@ -76,13 +76,13 @@ export default async function(grid: Grid) {
           (t, tIndex) => {
             // offset: from ring side center
             const offset = Math.abs(tIndex - ringIndex);
-            if ((ringIndex + offset === C) || (offset === D)) return;
+            if (ringIndex + offset === C || offset === D) return;
             t.setFillHsl(
               E + offset * B + ringIndex * A,
-              40 + (offset % D) * 50 / D,
-              70 - 80 / size  * ringIndex + 10
+              40 + ((offset % D) * 50) / D,
+              70 - (80 / size) * ringIndex + 10
             );
-                }
+          }
           // )
         )
       );

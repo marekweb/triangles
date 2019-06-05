@@ -40,7 +40,6 @@ export class Triangle {
     s = clamp(s, 0, 100);
     l = clamp(l, 0, 100);
     this.setFill(`hsl(${h},${s}%,${l}%)`);
-
   }
 
   setFill(colorString: string) {
