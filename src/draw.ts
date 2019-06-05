@@ -10,14 +10,19 @@ export function drawCube(centerPoint: Point, hue: number = 0) {
   const left = `hsl(${hue}, ${s - 10}%, ${l - 25}%)`;
   const right = `hsl(${hue}, ${s - 20}%, ${l - 50}%)`;
 
-  centerPoint.getTriangle('NE').setFill(top);
-  centerPoint.getTriangle('NW').setFill(top);
+  const hex = drawHex(centerPoint);
+  hex.forEach(t => t.setFill('white'));
 
-  centerPoint.getTriangle('E').setFill(right);
-  centerPoint.getTriangle('SE').setFill(right);
+  return delay(200).then(() => {
+    centerPoint.getTriangle('NE').setFill(top);
+    centerPoint.getTriangle('NW').setFill(top);
 
-  centerPoint.getTriangle('W').setFill(left);
-  centerPoint.getTriangle('SW').setFill(left);
+    centerPoint.getTriangle('E').setFill(right);
+    centerPoint.getTriangle('SE').setFill(right);
+
+    centerPoint.getTriangle('W').setFill(left);
+    centerPoint.getTriangle('SW').setFill(left);
+  });
 }
 
 export async function drawCubeTower(
@@ -29,7 +34,7 @@ export async function drawCubeTower(
 ) {
   for (let i = 0; i < height; i++) {
     drawCube(p, hue + 1 * i);
-    await delay(interval);
+    await delay(randomInt(0, interval));
     p = p.getAdjacentPoint(direction);
   }
   return hue + 1 * height;
@@ -88,9 +93,9 @@ export function drawRing(center: Point, size: number) {
   return triangles;
 }
 
-export function drawHex(center: Point, size: number): Triangle[] {
+export function drawHex(center: Point, size: number = 0): Triangle[] {
   const triangles: Triangle[] = [];
-  for (let i = 0; i < size; i++) {
+  for (let i = 0; i <= size; i++) {
     triangles.push(...drawRing(center, i));
   }
   return triangles;

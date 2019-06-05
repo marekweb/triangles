@@ -3,7 +3,7 @@ import { randomInt, delay, drawRing } from './draw';
 import { Point } from './point';
 
 export default async function hexDemo(grid: Grid) {
-  const size = 2;
+  const size = 1;
 
   while (true) {
     let point = grid.getPointReference(randomInt(-10, 10), randomInt(-10, 10));

@@ -1,4 +1,3 @@
-///<reference path="types.d.ts"/>
 import { Triangle } from './triangle';
 import { Point } from './point';
 import {

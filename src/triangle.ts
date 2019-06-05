@@ -6,6 +6,10 @@ import {
   getTrianglePointInDirection
 } from './utilities';
 
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
 export class Triangle {
   private grid: Grid;
   private x: number;
@@ -31,6 +35,14 @@ export class Triangle {
     return this.grid.getTriangleElement(this.x, this.y, this.side);
   }
 
+  setFillHsl(h: number, s: number, l: number) {
+    h = h % 360;
+    s = clamp(s, 0, 100);
+    l = clamp(l, 0, 100);
+    this.setFill(`hsl(${h},${s}%,${l}%)`);
+
+  }
+
   setFill(colorString: string) {
     // `requestAnimationFrame` is necessary here for CSS transitions to work
     // when the element is first created. `getElement` will lazily create the
@@ -45,6 +57,22 @@ export class Triangle {
         triangleElement.style.stroke = colorString;
       });
     });
+  }
+
+  fade(factor: number) {
+    const triangleElement = this.getElement();
+    const computedColor = window.getComputedStyle(triangleElement).fill;
+    if (!computedColor) {
+      return;
+    }
+    const parts = computedColor
+      .slice(0, 4)
+      .slice(0, computedColor.length - 2)
+      .split(', ')
+      .map(i => Number.parseInt(i, 10))
+      .map(i => i * factor)
+      .join(', ');
+    this.setFill(`rgb(${parts})`);
   }
 
   getAdjacent(direction: Direction): Triangle {

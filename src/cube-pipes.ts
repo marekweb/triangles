@@ -1,5 +1,5 @@
 import { Grid } from './grid';
-import { drawCubeTower, randomInt, randomChoice, delay } from './draw';
+import { drawCubeTower, randomInt, randomChoice } from './draw';
 
 export default async function cubePipes(grid: Grid) {
   let p = grid.getPointReference(0, 0);
@@ -7,14 +7,17 @@ export default async function cubePipes(grid: Grid) {
   const directions: Direction[] = ['N', 'SW', 'SE'];
   while (true) {
     let nextP, direction: Direction, distance;
+
+    // Select a random direction and distance until you find one that doesn't
+    // go off the screen.
     do {
       direction = randomChoice(directions);
-      distance = randomInt(1, 6);
+      distance = randomInt(3, 8);
       nextP = p.getAdjacentPoint(direction, distance);
     } while (!nextP.isWithinScreen());
-    hue = await drawCubeTower(p, direction, distance, hue, 200);
+
+    hue = await drawCubeTower(p, direction, distance, hue, 400);
     hue = hue % 360;
     p = nextP;
-    await delay(0);
   }
 }
