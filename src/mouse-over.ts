@@ -1,7 +1,7 @@
 import { Triangle } from './triangle';
 import { Grid } from './grid';
 
-export async function mouseOver(grid: Grid) {
+export default async function mouseOver(grid: Grid) {
   let activeTriangle: Triangle | null = null;
 
   window.document.addEventListener('mousemove', (e: MouseEvent) => {

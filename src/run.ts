@@ -3,18 +3,19 @@ import cubePipes from './cube-pipes';
 import ringsDemo from './rings-demo';
 import mandalaDemo from './mandala-demo';
 import hexDemo from './hex-demo';
+import mouseOver from './mouse-over';
 
-const demoName = window.location.hash || 'mandala';
+const demoName = window.location.hash.slice(1);
 
 const root = document.getElementById('root');
 if (root) {
   switch (demoName) {
-    case 'pipes':
-      run(cubePipes);
+    case 'mouse':
+      run(mouseOver);
       break;
 
-    case 'mandala':
-      run(mandalaDemo);
+    case 'pipes':
+      run(cubePipes);
       break;
 
     case 'rings':
@@ -23,6 +24,11 @@ if (root) {
 
     case 'hex':
       run(hexDemo);
+      break;
+
+    default:
+    case 'mandala':
+      run(mandalaDemo);
       break;
   }
 } else {
