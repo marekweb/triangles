@@ -2,15 +2,12 @@ import { Grid } from './grid';
 import { Point } from './point';
 import { Triangle } from './triangle';
 import { randomInt, delay } from './draw';
-// import { drawCubeTower, randomInt, delay } from './draw';
 
 export function drawRing(center: Point, size: number) {
-  // const triangles = [];
   const side = 1 + size * 2;
   const apex = center.getAdjacentPoint('N', size);
 
   let tri = apex.getTriangle('NW');
-  // triangles.push(tri);
 
   const directions: Direction[] = ['+X', 'S', '+Y', '-X', 'N', '-Y'];
 
@@ -24,35 +21,6 @@ export function drawRing(center: Point, size: number) {
       sideTriangles.push(tri);
     }
   }
-  // for (let i = 0; i < side; i++) {
-  //   tri = tri.getAdjacent('+X');
-  //   triangles.push(tri);
-  // }
-
-  // for (let i = 0; i < side; i++) {
-  //   tri = tri.getAdjacent('S');
-  //   triangles.push(tri);
-  // }
-
-  // for (let i = 0; i < side; i++) {
-  //   tri = tri.getAdjacent('+Y');
-  //   triangles.push(tri);
-  // }
-
-  // for (let i = 0; i < side; i++) {
-  //   tri = tri.getAdjacent('-X');
-  //   triangles.push(tri);
-  // }
-
-  // for (let i = 0; i < side; i++) {
-  //   tri = tri.getAdjacent('N');
-  //   triangles.push(tri);
-  // }
-
-  // for (let i = 0; i < side - 1; i++) {
-  //   tri = tri.getAdjacent('-Y');
-  //   triangles.push(tri);
-  // }
 
   return sides;
 }
@@ -76,7 +44,10 @@ export default async function(grid: Grid) {
           (t, tIndex) => {
             // offset: from ring side center
             const offset = Math.abs(tIndex - ringIndex);
-            if (ringIndex + offset === C || offset === D) return;
+            if (ringIndex + offset === C || offset === D) {
+              t.setFill('black');
+              return;
+            }
             t.setFillHsl(
               E + offset * B + ringIndex * A,
               40 + ((offset % D) * 50) / D,
