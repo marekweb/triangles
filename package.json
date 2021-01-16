@@ -1,9 +1,9 @@
 {
   "scripts": {
     "start": "parcel serve index.html",
-    "serve": "serve",
+    "serve": "serve dist/",
     "format": "prettier --write '**/*.{ts,html,md}'",
-    "bundle": "parcel build index.html"
+    "build": "parcel build index.html"
   },
   "browserslist": [
     "last 2 Chrome versions"
