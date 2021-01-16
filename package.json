@@ -2,7 +2,7 @@
   "scripts": {
     "start": "parcel serve index.html",
     "serve": "serve",
-    "format": "prettier --write 'src/**/*.{ts,html,md}'",
+    "format": "prettier --write '**/*.{ts,html,md}'",
     "bundle": "parcel build index.html"
   },
   "browserslist": [
@@ -12,7 +12,7 @@
     "arrowParens": "avoid",
     "singleQuote": true
   },
- "devDependencies": {
+  "devDependencies": {
     "parcel": "^2.0.0-beta.1",
     "prettier": "^2.2.1",
     "serve": "^11.3.2",
