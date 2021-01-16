@@ -5,9 +5,17 @@ export function getTrianglePoints(
 ): PixelCoordinateTriple {
   // [top, side, bottom]
   if (side) {
-    return [{ x, y }, { x: x + 1, y }, { x: x + 1, y: y + 1 }];
+    return [
+      { x, y },
+      { x: x + 1, y },
+      { x: x + 1, y: y + 1 },
+    ];
   }
-  return [{ x, y }, { x, y: y + 1 }, { x: x + 1, y: y + 1 }];
+  return [
+    { x, y },
+    { x, y: y + 1 },
+    { x: x + 1, y: y + 1 },
+  ];
 }
 
 export function getAdjacentTriangle(
@@ -166,7 +174,7 @@ export function scalePoints(
   center: PixelCoordinate
 ) {
   points = points.map(p => ({ x: p.x - center.x, y: p.y - center.y }));
-  points = points.map(p => ({ x: p.x *= factor, y: p.y *= factor }));
+  points = points.map(p => ({ x: (p.x *= factor), y: (p.y *= factor) }));
   return points.map(p => ({ x: p.x + center.x, y: p.y + center.y }));
 }
 
@@ -177,4 +185,8 @@ export function getTriangleCenter(
   const triangleCenterY = (points[0].y + points[1].y + points[2].y) / 3;
 
   return { x: triangleCenterX, y: triangleCenterY };
+}
+
+export function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
 }

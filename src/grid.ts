@@ -4,7 +4,7 @@ import {
   getTrianglePoints,
   setAttributes,
   getTriangleCenter,
-  scalePoints
+  scalePoints,
 } from './utilities';
 
 const SQRT3 = Math.sqrt(3);
@@ -157,7 +157,7 @@ export class Grid {
     setAttributes(pointElement, {
       cx,
       cy,
-      r: 4
+      r: 4,
     });
 
     this.svg.appendChild(pointElement);
@@ -173,7 +173,7 @@ export class Grid {
     setAttributes(pointElement, {
       cx,
       cy,
-      r: 4
+      r: 4,
     });
 
     this.svg.appendChild(pointElement);

@@ -3,12 +3,9 @@ import { Point } from './point';
 import {
   getAdjacentTriangle,
   getTrianglePoints,
-  getTrianglePointInDirection
+  getTrianglePointInDirection,
+  clamp,
 } from './utilities';
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
-}
 
 export class Triangle {
   private grid: Grid;

@@ -1,18 +1,28 @@
 import { Grid } from './grid';
-import { randomInt, delay, drawRing } from './draw';
+import { randomInt, delay, drawRing, randomChoice } from './draw';
 import { Point } from './point';
+import { clamp } from './utilities';
 
 export default async function hexDemo(grid: Grid) {
-  const size = 1;
-
+  let delayTime = 1000;
   while (true) {
-    let point = grid.getPointReference(randomInt(-10, 10), randomInt(-10, 10));
-    fillNiceHex(point, size, randomInt(0, 360));
-    await delay(randomInt(600, 1200));
+    // Pick a size, with more weight given to smaller than larger.
+    const size = randomChoice([0, 0, 0, 1, 1, 2]);
+
+    const point = grid.getPointReference(
+      randomInt(-10, 10),
+      randomInt(-10, 10)
+    );
+    drawHexBloom(point, size, randomInt(0, 360));
+
+    // Wait before each hex bloom
+    delayTime = clamp(delayTime + randomInt(-100, 100), 0, 3000);
+
+    await delay(delayTime);
   }
 }
 
-async function fillNiceHex(point: Point, size: number, hue: number) {
+async function drawHexBloom(point: Point, size: number, hue: number) {
   for (let i = 0; i <= size; i++) {
     const ring = drawRing(point, i);
     const s = 50 + i * (size / 50);

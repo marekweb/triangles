@@ -25,7 +25,7 @@ export function drawRing(center: Point, size: number) {
   return sides;
 }
 
-export default async function(grid: Grid) {
+export default async function (grid: Grid) {
   const center = grid.getPointReference(0, 0);
 
   while (true) {
@@ -34,6 +34,7 @@ export default async function(grid: Grid) {
     const C = randomInt(3, 5);
     const D = randomInt(2, 7);
     const E = randomInt(0, 360);
+    const F = randomInt(2, 6);
 
     const size = 14;
 
@@ -44,7 +45,13 @@ export default async function(grid: Grid) {
           (t, tIndex) => {
             // offset: from ring side center
             const offset = Math.abs(tIndex - ringIndex);
-            if (ringIndex + offset === C || offset === D) {
+            if (
+              // Blank some triangles on the ring
+              ringIndex + offset === C ||
+              offset === D ||
+              // Blank some entire rings
+              (ringIndex + 3) % F === 0
+            ) {
               t.setFill('black');
               return;
             }
@@ -57,16 +64,9 @@ export default async function(grid: Grid) {
           // )
         )
       );
-      await delay(50);
+      await delay(70);
     }
 
     await delay(5000);
   }
 }
-
-// 0 1 0
-// 1 3 1
-// 2 5 2
-// 3 7 3
-// 4 9 4
-// n n*2+1
