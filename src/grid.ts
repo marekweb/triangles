@@ -57,22 +57,31 @@ export class Grid {
 
   unconvertGridCoordinatesToTriangle(
     Px: number,
-    Py: number
+    Py: number,
   ): TriangleCoordinate {
-    // TODO This is close, but it doesn't work correctly
-    const { x, y } = this.unconvertGridCoordinates(Px, Py);
-    const side = (x < 0 ? 1 - (x % 1) : x % 1) > (y < 0 ? (1 - y) % 1 : y % 1);
-    return { x: Math.floor(x), y: Math.floor(y), z: side ? 0 : 1 };
+    let { x, y, z } = this.unconvertGridCoordinates(Px, Py);
+    x = Math.floor(x);
+    y = Math.floor(y);
+    z = Math.floor(z);
+    const sum = x + y + z;
+    // Even parity means the point is on the left side of the triangle
+    // Odd parity means the point is on the right side of the triangle
+    let side = sum % 2 === 0 ? 1 : 0;
+    return { x, y, z: side ? 1 : 0 };
   }
 
-  unconvertGridCoordinates(Px: number, Py: number): PixelCoordinate {
+  unconvertGridCoordinates(
+    Px: number,
+    Py: number,
+  ): PixelCoordinate & { z: number } {
     const Cx = this.centerX;
     const Cy = this.centerY;
     const H = this.triangleHalfSide;
     const A = this.triangleAltitude;
-    const x = ((Px - Cx) / A + (Py - Cy) / H) / 2;
-    const y = ((Py - Cy) / H - (Px - Cx) / A) / 2;
-    return { x, y };
+    const z = (Px - Cx) / A;
+    const x = (z + (Py - Cy) / H) / 2;
+    const y = ((Py - Cy) / H - z) / 2;
+    return { x, y, z };
   }
 
   convertGridCoordinatesToPointString(points: PixelCoordinate[]): string {
