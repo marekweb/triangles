@@ -23,7 +23,7 @@ interface PixelCoordinate {
 type PixelCoordinateTriple = [
   PixelCoordinate,
   PixelCoordinate,
-  PixelCoordinate
+  PixelCoordinate,
 ];
 
 interface PointCoordinate {

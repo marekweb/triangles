@@ -7,13 +7,13 @@ export default async function mouseOver(grid: Grid) {
   window.document.addEventListener('mousemove', (e: MouseEvent) => {
     const triangleCoord = grid.unconvertGridCoordinatesToTriangle(
       e.clientX,
-      e.clientY
+      e.clientY,
     );
     console.log(triangleCoord);
     const triangle = grid.getTriangleReference(
       triangleCoord.x,
       triangleCoord.y,
-      triangleCoord.z
+      triangleCoord.z,
     );
     if (triangle === activeTriangle) {
       return;

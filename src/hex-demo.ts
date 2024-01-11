@@ -11,7 +11,7 @@ export default async function hexDemo(grid: Grid) {
 
     const point = grid.getPointReference(
       randomInt(-10, 10),
-      randomInt(-10, 10)
+      randomInt(-10, 10),
     );
     drawHexBloom(point, size, randomInt(0, 360));
 
@@ -43,7 +43,7 @@ async function drawHexBloom(point: Point, size: number, hue: number) {
       ring.slice().forEach(t => {
         let h = hue + randomInt(-30, 30);
         t.setFill(
-          `hsl(${h}, ${50 + randomInt(-10, 10)}%, ${20 + randomInt(-5, 5)}%)`
+          `hsl(${h}, ${50 + randomInt(-10, 10)}%, ${20 + randomInt(-5, 5)}%)`,
         );
       });
     });

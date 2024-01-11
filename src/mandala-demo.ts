@@ -58,11 +58,11 @@ export default async function (grid: Grid) {
             t.setFillHsl(
               E + offset * B + ringIndex * A,
               40 + ((offset % D) * 50) / D,
-              70 - (80 / size) * ringIndex + 10
+              70 - (80 / size) * ringIndex + 10,
             );
-          }
+          },
           // )
-        )
+        ),
       );
       await delay(70);
     }

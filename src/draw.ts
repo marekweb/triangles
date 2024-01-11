@@ -30,7 +30,7 @@ export async function drawCubeTower(
   direction: Direction,
   height: number,
   hue: number = 0,
-  interval: number = 600
+  interval: number = 600,
 ) {
   for (let i = 0; i < height; i++) {
     drawCube(p, hue + 1 * i);
@@ -104,7 +104,7 @@ export function drawHex(center: Point, size: number = 0): Triangle[] {
 export function fillRing(
   center: Point,
   size: number,
-  color: string = 'orange'
+  color: string = 'orange',
 ) {
   drawRing(center, size).forEach(t => {
     t.setFill(color);

@@ -27,7 +27,7 @@ export class Grid {
     container: HTMLElement,
     width: number,
     height: number,
-    triangleAltitude: number
+    triangleAltitude: number,
   ) {
     if (!container) {
       throw new Error('Missing container');
@@ -95,7 +95,7 @@ export class Grid {
   createTriangleElement(x: number, y: number, side: number) {
     const triangleElement = document.createElementNS(
       'http://www.w3.org/2000/svg',
-      'polygon'
+      'polygon',
     );
 
     let points = getTrianglePoints(x, y, side);
@@ -104,7 +104,7 @@ export class Grid {
     points = scalePoints(
       points,
       this.triangleScaleFactor,
-      center
+      center,
     ) as PixelCoordinateTriple;
 
     const pointsString = this.convertGridCoordinatesToPointString(points);
@@ -160,7 +160,7 @@ export class Grid {
   createCoordinateMarker(cx: number, cy: number): SVGCircleElement {
     const pointElement = document.createElementNS(
       'http://www.w3.org/2000/svg',
-      'circle'
+      'circle',
     );
 
     setAttributes(pointElement, {
@@ -176,7 +176,7 @@ export class Grid {
   createPointElement(x: number, y: number): SVGCircleElement {
     const pointElement = document.createElementNS(
       'http://www.w3.org/2000/svg',
-      'circle'
+      'circle',
     );
     const { x: cx, y: cy } = this.convertGridCoordinates(x, y);
     setAttributes(pointElement, {
@@ -208,7 +208,7 @@ export class Grid {
   isPixelCoordinateWithinScreen(
     x: number,
     y: number,
-    margin: number = 0
+    margin: number = 0,
   ): boolean {
     return !(
       x < 0 ||

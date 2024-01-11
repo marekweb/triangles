@@ -1,7 +1,7 @@
 export function getTrianglePoints(
   x: number,
   y: number,
-  side: number
+  side: number,
 ): PixelCoordinateTriple {
   // [top, side, bottom]
   if (side) {
@@ -22,7 +22,7 @@ export function getAdjacentTriangle(
   x: number,
   y: number,
   side: 0 | 1,
-  direction: Direction
+  direction: Direction,
 ): TriangleCoordinate {
   if (side) {
     switch (direction) {
@@ -79,7 +79,7 @@ export function getAdjacentPoint(
   x: number,
   y: number,
   direction: Direction,
-  n: number = 1
+  n: number = 1,
 ): PointCoordinate {
   switch (direction) {
     case 'N':
@@ -115,7 +115,7 @@ export function getAdjacentPoint(
 export function getTriangleAdjacentToPoint(
   x: number,
   y: number,
-  direction: Direction
+  direction: Direction,
 ): TriangleCoordinate {
   switch (direction) {
     case 'W':
@@ -137,7 +137,7 @@ export function getTriangleAdjacentToPoint(
 
 export function setAttributes(
   element: Element,
-  attributes: { [key: string]: string | number }
+  attributes: { [key: string]: string | number },
 ) {
   for (const name in attributes) {
     element.setAttribute(name, String(attributes[name]));
@@ -148,7 +148,7 @@ export function getTrianglePointInDirection(
   x: number,
   y: number,
   side: 0 | 1,
-  direction: Direction
+  direction: Direction,
 ): PointCoordinate {
   // TODO: this could be optimized to avoid calculating all three points
   const points = getTrianglePoints(x, y, side);
@@ -171,7 +171,7 @@ export function getTrianglePointInDirection(
 export function scalePoints(
   points: PixelCoordinate[],
   factor: number,
-  center: PixelCoordinate
+  center: PixelCoordinate,
 ) {
   points = points.map(p => ({ x: p.x - center.x, y: p.y - center.y }));
   points = points.map(p => ({ x: (p.x *= factor), y: (p.y *= factor) }));
@@ -179,7 +179,7 @@ export function scalePoints(
 }
 
 export function getTriangleCenter(
-  points: PixelCoordinateTriple
+  points: PixelCoordinateTriple,
 ): PixelCoordinate {
   const triangleCenterX = (points[0].x + points[1].x + points[2].x) / 3;
   const triangleCenterY = (points[0].y + points[1].y + points[2].y) / 3;
