@@ -1,21 +1,17 @@
 {
+	"type": "module",
 	"scripts": {
 		"start": "vite",
-		"format": "prettier --write '**/*.{ts,html,md}'",
+		"format": "biome format --write",
 		"fix": "biome check --write --unsafe",
 		"build": "vite build"
 	},
 	"browserslist": [
 		"last 2 Chrome versions"
 	],
-	"prettier": {
-		"arrowParens": "avoid",
-		"singleQuote": true
-	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.4.4",
-		"prettier": "^3.1.1",
-		"typescript": "^5.3.3",
-		"vite": "^7.1.12"
+		"@biomejs/biome": "^2.5.10",
+		"typescript": "^7.0.2",
+		"vite": "^8.2.2"
 	}
 }

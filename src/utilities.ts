@@ -174,7 +174,7 @@ export function scalePoints(
 	center: PixelCoordinate,
 ) {
 	points = points.map((p) => ({ x: p.x - center.x, y: p.y - center.y }));
-	points = points.map((p) => ({ x: (p.x *= factor), y: (p.y *= factor) }));
+	points = points.map((p) => ({ x: p.x * factor, y: p.y * factor }));
 	return points.map((p) => ({ x: p.x + center.x, y: p.y + center.y }));
 }
 

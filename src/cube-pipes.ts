@@ -1,12 +1,15 @@
 import { drawCubeTower, randomChoice, randomInt } from "./draw";
 import type { Grid } from "./grid";
+import type { Point } from "./point";
 
 export default async function cubePipes(grid: Grid) {
 	let p = grid.getPointReference(0, 0);
 	let hue = 0;
 	const directions: Direction[] = ["N", "SW", "SE"];
 	while (true) {
-		let nextP, direction: Direction, distance;
+		let nextP: Point;
+		let direction: Direction;
+		let distance: number;
 
 		// Select a random direction and distance until you find one that doesn't
 		// go off the screen.

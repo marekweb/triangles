@@ -11,7 +11,9 @@ export function drawCube(centerPoint: Point, hue: number = 0) {
 	const right = `hsl(${hue}, ${s - 20}%, ${l - 50}%)`;
 
 	const hex = drawHex(centerPoint);
-	hex.forEach((t) => t.setFill("white"));
+	hex.forEach((t) => {
+		t.setFill("white");
+	});
 
 	return delay(200).then(() => {
 		centerPoint.getTriangle("NE").setFill(top);
