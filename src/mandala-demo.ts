@@ -40,7 +40,7 @@ export default async function (grid: Grid) {
 
 		for (let ringIndex = 0; ringIndex < size; ringIndex++) {
 			const sides = drawRing(center, ringIndex);
-			sides.forEach((side) =>
+			sides.forEach((side) => {
 				side.forEach(
 					(t, tIndex) => {
 						// offset: from ring side center
@@ -62,8 +62,8 @@ export default async function (grid: Grid) {
 						);
 					},
 					// )
-				),
-			);
+				);
+			});
 			await delay(70);
 		}
 
